@@ -3,19 +3,21 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies from the frontend folder
+# Copy dependencies
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm install
 
-# Copy the rest of the frontend source code
+# Install ALL dependencies (including Vite) regardless of Render's global NODE_ENV
+RUN npm install --include=dev
+
+# Copy source code
 COPY frontend/ .
 
-# Inject the Render Environment Variable to Vite at build-time
+# Build args
 ARG VITE_GEMINI_API_KEY
 ENV VITE_GEMINI_API_KEY=$VITE_GEMINI_API_KEY
 
-# Build the production bundle
-RUN npm run build
+# Build the production bundle (with expanded memory to prevent Free Tier OOM crashes)
+RUN NODE_OPTIONS="--max_old_space_size=1024" npm run build
 
 # Stage 2: Serve the files using Nginx
 FROM nginx:alpine
@@ -23,13 +25,13 @@ FROM nginx:alpine
 # Clear default nginx assets
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy our custom Nginx config to handle direct URL routing back to index.html
+# Copy our custom Nginx config
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy the generated Vite assets from Stage 1 into the Nginx static folder
+# Copy the generated Vite assets
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expose port 80 for Render routing
+# Expose port 80
 EXPOSE 80
 
 # Start Nginx
