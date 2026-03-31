@@ -11,7 +11,7 @@ export default function Home() {
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'rgba(196, 101, 42, 0.1)', borderRadius: '999px', color: 'var(--primary)', fontWeight: 600, fontSize: '0.875rem', width: 'max-content' }}>
             <Sparkles size={16} /> AI-Powered Interior Design
           </div>
-          <h1 className="heading-xl">Visualize your <span style={{ fontStyle: 'italic', color: 'var(--primary)' }}>dream space</span> instantly.</h1>
+          <h1 className="heading-xl">DreamDwell: <span style={{ fontStyle: 'italic', color: 'var(--primary)' }}>Live the Space You Imagine</span></h1>
           <p className="text-lg mt-4" style={{ maxWidth: '480px' }}>
             Upload a photo of your room and let our AI generate stunning interior concepts. Connect with local vendors and buy decor right away.
           </p>
